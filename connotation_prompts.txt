@@ -1,0 +1,4 @@
+1. En: The pronoun for {person_name} is {pronoun}. Does the following text about {person_name} imply a positive, neutral, or negative sentiment towards {person_name}? Explain why in one sentence. Write your response in JSON format with two keys: label and explanation). \n {content} (pos/neutral/neg)\\
+2. Fr: Le pronom du {person_name} est {pronoun}. Est-ce que le texte suivant au sujet de {person_name} implique un sentiment positif, neutre ou négatif envers {person_name}? Expliquez pourquoi en une phrase. Écrivez votre réponse en format JSON avec deux clés: étiquette et explication). \n {content} (pos/neutral/neg)\\
+3. Ru: Местоимение для {person_name} - {pronoun}. Подразумевает ли следующий текст о {person_name} положительное, нейтральное или отрицательное отношение к {person_name}? Объясните почему в одном предложении. Напишите ваш ответ в формате JSON с двумя ключами: метка и объяснение). \n {content} (положительный/нейтральный/отрицательный)
+         
