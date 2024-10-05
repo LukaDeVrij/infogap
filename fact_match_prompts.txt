@@ -1,0 +1,3 @@
+1. En: Consider these English facts about {person_name}:\n {src_facts}. Is the last fact in the list inferrerable from the following {tgt_lang} facts?\n {tgt_facts}. Return either yes or no.
+2. Fr:  Considérez ces faits français sur {person_name}:\n {src_facts}. Est le dernier fait de la liste inférable de l'une des listes de faits suivantes?\n {tgt_facts}. Retournez oui or non.
+3. Ru: Рассмотрим эти факты на русском языке о {person_name}:\n {src_facts}. Можно ли вывести последний факт из одного из следующих списков фактов?\n {tgt_facts} Возвращает список, содержащий ['да' или 'нет'] — один ответ для каждого списка фактов {tgt_lang}. Все ответы «да/нет» должны быть помещены в список строк Python. (например, ['да', 'нет', 'да'])
