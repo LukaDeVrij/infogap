@@ -9,7 +9,7 @@ Email: `fsamir@mail.ubc.ca`
 @inproceedings{samir-2024-information,
     title = "Locating Information Gaps and Narrative Inconsistencies Across Languages: A Case Study of LGBT People Portrayals on Wikipedia",
     author = "Samir, Farhan  and
-      Park, Chan and
+      Park, Chan Young and
       Field, Anjalie and
       Shwartz, Vered and 
       Tsvetkov, Yulia",
