@@ -1,3 +1,4 @@
+import os
 import json
 import datetime
 from typing import List
@@ -44,7 +45,6 @@ def step_prep_for_caa(map_en_fr_info_gaps, en_bio_id, fr_bio_id,
     elif len(fr_info_gap_df) == 0:
         raise InfoGapEmptyError(f"fr_info_gap_df is empty for {fr_bio_id}")
     # NOTE: 2024-03-14: noticed there was a problem of double counting quote paragraphs. This was fixed in that day, so bios moving forward should be good.
-    ipdb.set_trace()
     fr_info_gap_df = fr_info_gap_df.group_by(['aligned_sentence'])\
         .agg(pl.col('fact').explode(), pl.col(intersection_column).explode(), pl.col('fact_index').explode(), pl.col('paragraph_index').explode(), 
              pl.col('pronoun').first(), pl.col('person_name').first())
@@ -243,6 +243,7 @@ def step_caa_multi_sentence_en_tgt(en_tgt_info_gaps, tgt_lang_code, **kwargs):
 
     info_gap = pl.concat([en_info_gap, tgt_info_gap])
     date = datetime.datetime.now().strftime("%m-%d")
+    os.makedirs(ANNOTATION_SAVE_PATH, exist_ok=True)
     info_gap.write_json(f"{ANNOTATION_SAVE_PATH}/connotation_en-{tgt_lang_code}_{date}.json")
     logger.info(f"Saved the connotation data to {ANNOTATION_SAVE_PATH}/connotation_en-{tgt_lang_code}_{date}.json")
     return en_info_gap, tgt_info_gap

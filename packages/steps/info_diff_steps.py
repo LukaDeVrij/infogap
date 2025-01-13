@@ -1,3 +1,4 @@
+import os
 import dill
 import json
 import datetime
@@ -189,21 +190,14 @@ def check_gpt_fact_cache(person_name, lang_code) -> Dict[str, str]:
 
 def write_gpt_fact_cache(person_name, lang_code, fact_cache):
     cache_dir = GPT_CACHE_LOCATION
+    if not os.path.exists(cache_dir):
+        os.makedirs(cache_dir, exist_ok=True)
     cache_file = f"{cache_dir}/{person_name}_{lang_code}_facts.json"
     with open(cache_file, 'w') as f:
         json.dump(fact_cache, f)
 
-def load_tsvetshop_client():
-    key = config["THE_KEY"] 
-    client = openai.AzureOpenAI(
-            azure_endpoint="https://tsvetshop.openai.azure.com/",
-            api_key=key,
-            api_version="2023-05-15"
-        )
-    return client
-
 def load_other_client():
-    key = config['ALLEN_KEY']
+    key = config['THE_KEY']
     client = OpenAI(api_key=key)  # TODO: put this in an env instead.
     return client
 
