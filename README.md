@@ -11,6 +11,29 @@ Our analysis dataframes from Section 3 of our paper are here, in JSON format (ab
 
 You can process them with the `polars` package (`pl.read_json(...)`). `pandas` should also work. I recommend inspecting these dataframes before trying out the pipeline on your own documents.  
 
+# Running the pipeline yourself
+## I. Install flowmason
+1. Clone the repo: `git clone https://github.com/smfsamir/flowmason`
+2. Go into directory: `cd flowmason`
+3. Checkout the `abstract` branch: `git checkout abstract`
+4. Install the package locally `pip install -e .`
+
+## II. Install wikipedia-edit-scrape-tool
+1. Clone the repo: `git clone https://github.com/smfsamir/wikipedia-edit-scrape-tool`
+2. Go into directory: `cd wikipedia-edit-scrape-tool`
+3. Install the package locally `pip install -e .`
+
+## III. Set up an Environment file
+1. In `infogap` project directory, run `touch .env`
+2. Create two keys: `SCRATCH_DIR` (where all the artifacts from the pipeline will be stored)
+3. 
+
+## IV. Install requirements
+`pip install -r requirements.txt` (It's possible I missed a couple of modules here, please submit a PR if you find that to be the case and I'll approve right away). 
+
+## V. Scrape the biographies you want 
+With the `main_scrape_bios.py` module, you can down
+
 # Citation
 ```
 @inproceedings{samir-2024-information,
