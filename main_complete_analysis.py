@@ -164,7 +164,6 @@ def execute_complete_gpt():
     metadata = conduct(os.path.join(SCRATCH_DIR, "full_cache"), full_map_dict, "full_analysis_logs")
     info_gap_dfs = load_mr_artifact(metadata[0])
     connotation_dfs = load_mr_artifact(metadata[-1])
-    ipdb.set_trace()
 
 def _parse_response(response_raw):
     assert ',' in response_raw, f"Response does not contain a comma: {response_raw}"

@@ -46,7 +46,7 @@ def step_load_pairs_common(**kwargs) -> pl.DataFrame:
     target_person_name = []
     matched_person_name = []
     matched_categories = []
-    with open('pairs_common.tsv', 'r') as f:
+    with open('lgbt_bio_corpus.tsv', 'r') as f:
         for line in f:
             line_split = line.split('\t')
             target_en_bio, matched_en_bio = line_split[1], line_split[2]
@@ -78,7 +78,7 @@ def step_get_ru_pairs_common(**kwargs):
     target_person_ru_ids = []
     matched_person_ru_ids = []
     count = 0
-    with open("pairs_common.tsv", "r") as f:
+    with open("lgbt_bio_corpus.tsv", "r") as f:
         for line in f:
             line_split = line.split('\t')
             target_en_id, matched_en_id = line_split[1], line_split[2]
