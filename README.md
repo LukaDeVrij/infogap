@@ -24,9 +24,11 @@ You can process them with the `polars` package (`pl.read_json(...)`). `pandas` s
 3. Install the package locally `pip install -e .`
 
 ## III. Set up an Environment file
+The purpose of the `.env` is to set configuration environment variables specific to you. Don't commit this. 
 1. In `infogap` project directory, run `touch .env`
-2. Create two keys: `SCRATCH_DIR` (where all the artifacts from the pipeline will be stored)
-3. 
+2. Create two keys: `SCRATCH_DIR` (where all the artifacts from the pipeline will be stored), and `THE_KEY`, an OpenAI key.
+
+
 
 ## IV. Install requirements
 `pip install -r requirements.txt` (It's possible I missed a couple of modules here, please submit a PR if you find that to be the case and I'll approve right away). 
