@@ -64,6 +64,11 @@ The line `metadata = conduct(os.path.join(SCRATCH_DIR, "full_cache"), full_map_d
 
 (NOTE: we only tested it on biographies. On events with complex histories, like border conflicts, it may not be as reliable. At any rate, you'll want to evaluate the results for a couple of samples. More on that below). 
 
+## VII. Evaluating InfoGap on your documents
+If you're using this for the first time, you should check that the InfoGap labels are reasonably aligned with your expectations. 
+
+- [ ] TODO: explain how to do the evaluation. 
+
 # Citation
 ```
 @inproceedings{samir-2024-information,
