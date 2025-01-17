@@ -30,7 +30,7 @@ def get_en_fr_info_diff_map_dict(en_bio_id=None, fr_bio_id=None, person_name=Non
         'version': '003', 
         **en_bio_id_dict
     },)
-    map_reduce_dict['step_get_fr_content_blocks'] = SingletonStep(step_retrieve_fr_content_blocks, { # in info diff steps
+    map_reduce_dict['step_get_fr_content_blocks'] = SingletonStep(step_retrieve_prescraped_fr_content_blocks, { # in info diff steps
         'version': '003', 
         **fr_bio_id_dict
     })
@@ -51,6 +51,7 @@ def get_en_fr_info_diff_map_dict(en_bio_id=None, fr_bio_id=None, person_name=Non
         'version': '001',
         'en_content_blocks': 'step_get_en_content_blocks' 
     })
+    #### 
     map_reduce_dict['step_align_fact_paragraphs'] = SingletonStep(step_obtain_paragraphs_associations, {
         'version': '003',
         'en_facts': 'step_generate_facts',
@@ -70,6 +71,8 @@ def get_en_fr_info_diff_map_dict(en_bio_id=None, fr_bio_id=None, person_name=Non
         **fr_bio_id_dict,
         **person_name_dict
     })
+    ### 
+
     map_reduce_dict['step_reasoning_intersection_label'] = SingletonStep(step_compute_info_gap_reasoning, {
         'version': '006',
         'model_name': 'gpt-4',

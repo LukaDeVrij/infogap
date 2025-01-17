@@ -11,7 +11,7 @@ import pandas as pd
 import ipdb
 import polars as pl
 from collections import OrderedDict
-from typing import Optional, List, Tuple
+from typing import Optional, List, Tuple, Iterable
 from functools import partial
 import loguru
 
@@ -132,7 +132,7 @@ def _get_name(progress, client, en_bio_id):
     return name 
 
 
-def step_add_person_name_column(bio_frame: pl.DataFrame, **kwargs) -> pl.DataFrame:
+def step_add_person_name_column_lgbt_bio_corpus(bio_frame: pl.DataFrame, **kwargs) -> pl.DataFrame:
     progress = tqdm.tqdm(total=len(bio_frame) * 2)
     get_name = partial(_get_name, progress=progress, client=Client())
     bio_frame = bio_frame.with_columns([
@@ -143,6 +143,17 @@ def step_add_person_name_column(bio_frame: pl.DataFrame, **kwargs) -> pl.DataFra
     # log the number of rows that are null 
     logger.info(f"Number of rows with null target_person_name: {len(bio_frame.filter(pl.col('target_person_name').is_null()))}")
     return bio_frame
+
+def step_add_person_name_column(bio_frame: pl.DataFrame, **kwargs) -> pl.DataFrame:
+    progress = tqdm.tqdm(total=len(bio_frame))
+    get_name = partial(_get_name, progress=progress, client=Client())
+    bio_frame = bio_frame.with_columns([
+        pl.col('en_bio_id').map_elements(lambda element: get_name(en_bio_id=element)).alias('person_name'),
+    ])
+    # log the number of rows that are null 
+    logger.info(f"Number of rows with null target_person_name: {len(bio_frame.filter(pl.col('person_name').is_null()))}")
+    return bio_frame
+
 
 def step_load_ru_bios(en_ru_bio_id_names: List[Tuple[str,str,str, str]], **kwargs):
     en_bio_ids = [en_bio_id for en_bio_id, _, _,_ in en_ru_bio_id_names]
@@ -470,12 +481,12 @@ def step_load_ru_section_headers(**kwargs):
     # return pl.concat(frames)
 
 @click.command()
-def scrape_french_bios():
+def scrape_french_bios_lgbtbiocorpus():
     step_dict = OrderedDict()
     step_dict['step_load_pairs_common'] = SingletonStep(step_load_pairs_common, {
         'version': '001'
     })
-    step_dict['step_add_person_name_column'] = SingletonStep(step_add_person_name_column, {
+    step_dict['step_add_person_name_column'] = SingletonStep(step_add_person_name_column_lgbt_bio_corpus, {
         'bio_frame': 'step_load_pairs_common',
         'version': '001'
     })
@@ -499,7 +510,7 @@ def scrape_french_bios():
 
 
 @click.command()
-def scrape_russian_bios():
+def scrape_russian_bios_lgbtbiocorpus():
     step_dict = OrderedDict()
     step_dict['step_load_russian_pairs_common'] = SingletonStep(step_get_ru_pairs_common, {
         'version': '001'
@@ -633,15 +644,43 @@ def scrape_ablation_bios():
     # })
     metadata = conduct(os.path.join(SCRATCH_DIR, "bio_scrape_cache"), step_dict, "scrape_ablation_bios")
 
+def step_get_en_fr_bio_ids() -> pl.DataFrame:
+    en_bio_ids = ['Tim_Cook', 'Chelsea_Manning']
+    frame = pl.DataFrame({
+        'en_bio_id': en_bio_ids
+    })
+    progress = tqdm.tqdm(total=len(frame))
+    get_fr_wikiid_progress = partial(_get_frwiki_id, progress=progress)
+    frame = frame.with_columns([
+        pl.col('en_bio_id').map_elements(get_fr_wikiid_progress).alias('fr_bio_id'),
+    ])
+    return frame
+
+@click.command()
+def scrape_en_fr_bios():
+    step_dict = OrderedDict()
+    step_dict['step_get_id_frame'] = SingletonStep(step_get_en_fr_bio_ids, {
+        'version': '001'
+    })
+    step_dict['step_add_person_name_column'] = SingletonStep(step_add_person_name_column, {
+        'bio_id_frame': 'step_get_id_frame',
+        'version': '001'
+    })
+    step_dict['step_load_bios'] = SingletonStep(step_load_bios, {
+        'en_fr_bio_ids_names': 'step_add_person_name_column',
+        'version': '001'
+    })
+    metadata = conduct(os.path.join(SCRATCH_DIR, "bio_scrape_cache"), step_dict, "scrape_en_fr_bios")
 
 @click.group()
 def main():
     pass
 
-main.add_command(scrape_french_bios)
-main.add_command(scrape_russian_bios)
+main.add_command(scrape_french_bios_lgbtbiocorpus)
+main.add_command(scrape_russian_bios_lgbtbiocorpus)
 main.add_command(scrape_people_categories)
 main.add_command(scrape_ablation_bios)
+main.add_command(scrape_en_fr_bios)
 
 if __name__ == '__main__':
     main()
