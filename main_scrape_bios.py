@@ -234,6 +234,14 @@ def step_load_bios(en_fr_bio_ids_names: List[Tuple[str,str]], **kwargs):
 
 def step_filter_rows(bio_frame: pl.DataFrame, **kwargs) -> pl.DataFrame:
     initial_size = len(bio_frame)
+    bio_frame = bio_frame.filter(pl.col('fr_bio_id') != 'unavailable through mediawiki')
+    bio_frame = bio_frame.filter(pl.col('person_name') != 'unavailable through wikidata')
+    current_size = len(bio_frame)
+    logger.info(f"Filtered out {initial_size - current_size} rows.")
+    return bio_frame
+
+def step_filter_rows_lgbtbiocorpus(bio_frame: pl.DataFrame, **kwargs) -> pl.DataFrame:
+    initial_size = len(bio_frame)
     bio_frame = bio_frame.filter(pl.col('target_fr_bio_id') != 'unavailable through mediawiki')
     bio_frame = bio_frame.filter(pl.col('matched_fr_bio_id') != 'unavailable through mediawiki')
     bio_frame = bio_frame.filter(pl.col('target_person_name') != 'unavailable through wikidata')
@@ -241,7 +249,7 @@ def step_filter_rows(bio_frame: pl.DataFrame, **kwargs) -> pl.DataFrame:
     logger.info(f"Filtered out {initial_size - current_size} rows.")
     return bio_frame
 
-def step_obtain_target_en_fr_bio_ids(bio_frame, **kwargs):
+def step_obtain_target_en_fr_bio_ids_lgbtbiocorpus(bio_frame, **kwargs):
     # get the corresponding fr bio ids
     inital_target_en_bio_ids = bio_frame['target_en_bio_id'].to_list()
     target_fr_bio_ids = bio_frame['target_fr_bio_id'].to_list()
@@ -254,6 +262,18 @@ def step_obtain_target_en_fr_bio_ids(bio_frame, **kwargs):
     en_fr_bio_ids_names = list(zip(inital_target_en_bio_ids + initial_control_en_bio_ids, 
                                    target_fr_bio_ids + control_fr_bio_ids, 
                                    person_names + control_person_names))
+    return en_fr_bio_ids_names
+
+def step_obtain_target_en_fr_bio_ids(bio_frame, **kwargs):
+    # get the corresponding fr bio ids
+    en_bio_ids = bio_frame['en_bio_id'].to_list()
+    fr_bio_ids = bio_frame['fr_bio_id'].to_list()
+    person_names = bio_frame['person_name'].to_list()
+
+    # # zip the en and fr bio ids together
+    en_fr_bio_ids_names = list(zip(en_bio_ids, 
+                                   fr_bio_ids, 
+                                   person_names ))
     return en_fr_bio_ids_names
 
 def step_obtain_target_en_ru_bio_ids(bio_frame, **kwargs):
@@ -490,11 +510,11 @@ def scrape_french_bios_lgbtbiocorpus():
         'bio_frame': 'step_load_pairs_common',
         'version': '001'
     })
-    step_dict['step_filter_rows'] = SingletonStep(step_filter_rows, {
+    step_dict['step_filter_rows'] = SingletonStep(step_filter_rows_lgbtbiocorpus, {
         'bio_frame': 'step_add_person_name_column', 
         'version': '001'
     })
-    step_dict['step_obtain_target_en_fr_bio_ids'] = SingletonStep(step_obtain_target_en_fr_bio_ids, {
+    step_dict['step_obtain_target_en_fr_bio_ids'] = SingletonStep(step_obtain_target_en_fr_bio_ids_lgbtbiocorpus, {
         'bio_frame': 'step_filter_rows',
         'version': '007'
     })
@@ -644,7 +664,7 @@ def scrape_ablation_bios():
     # })
     metadata = conduct(os.path.join(SCRATCH_DIR, "bio_scrape_cache"), step_dict, "scrape_ablation_bios")
 
-def step_get_en_fr_bio_ids() -> pl.DataFrame:
+def step_get_en_fr_bio_ids(**kwargs) -> pl.DataFrame:
     en_bio_ids = ['Tim_Cook', 'Chelsea_Manning']
     frame = pl.DataFrame({
         'en_bio_id': en_bio_ids
@@ -663,24 +683,33 @@ def scrape_en_fr_bios():
         'version': '001'
     })
     step_dict['step_add_person_name_column'] = SingletonStep(step_add_person_name_column, {
-        'bio_id_frame': 'step_get_id_frame',
+        'bio_frame': 'step_get_id_frame',
         'version': '001'
+    })
+    step_dict['step_filter_rows'] = SingletonStep(step_filter_rows, {
+        'bio_frame': 'step_add_person_name_column', 
+        'version': '001'
+    })
+    step_dict['step_obtain_target_en_fr_bio_ids'] = SingletonStep(step_obtain_target_en_fr_bio_ids, {
+        'bio_frame': 'step_filter_rows',
+        'version': '007'
     })
     step_dict['step_load_bios'] = SingletonStep(step_load_bios, {
-        'en_fr_bio_ids_names': 'step_add_person_name_column',
+        'en_fr_bio_ids_names': 'step_obtain_target_en_fr_bio_ids',
         'version': '001'
     })
+
     metadata = conduct(os.path.join(SCRATCH_DIR, "bio_scrape_cache"), step_dict, "scrape_en_fr_bios")
 
 @click.group()
 def main():
     pass
 
-main.add_command(scrape_french_bios_lgbtbiocorpus)
-main.add_command(scrape_russian_bios_lgbtbiocorpus)
-main.add_command(scrape_people_categories)
+main.add_command(scrape_french_bios_lgbtbiocorpus) # for replicating EMNLP'24
+main.add_command(scrape_russian_bios_lgbtbiocorpus) # for replicating EMNLP'24
+main.add_command(scrape_people_categories) # covariates for regression analysis in EMNLP'24
 main.add_command(scrape_ablation_bios)
-main.add_command(scrape_en_fr_bios)
+main.add_command(scrape_en_fr_bios) 
 
 if __name__ == '__main__':
     main()
