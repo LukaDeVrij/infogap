@@ -1,6 +1,3 @@
-# infogap
-Implementation for the InfoGap pipeline will be available soon, definitely by EMNLP'24 (probably sooner). 
-
 # Contact
 Email: `fsamir@mail.ubc.ca`
 
