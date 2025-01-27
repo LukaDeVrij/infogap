@@ -114,7 +114,7 @@ A few things to note:
 - You can see at the start of the annotation, the total number of samples in the annotation JSON that haven't been annotated (at the beginning this will be 20).
 - A progress bar that says 0/10. This may be confusing because there are 20 samples to be annotated. This is because I try to annotate 10 samples per sitting (each annotation is not easy since you may have to read the target article in full to see whether the fact is listed/inferrable or not. You can annotate more than 10 in one sitting by changing the `num_samples` parameter in the call to `annotate_frame` in `main_perform_annotation.py`.
 - When you finish all 10 (for the sitting), or Ctrl+C and exit, your annotations will be saved. Next time you run the annotation, the terminal output will show that you have `20-n` annotations to complete.
-
+- It's also instructive to read Section 2.3 of the [paper](https://arxiv.org/pdf/2410.04282) to understand the terminal content for each datapoint. 
 
 
 
