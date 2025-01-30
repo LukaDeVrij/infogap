@@ -109,6 +109,14 @@ D: partly covered by the article
 E: Not in the article
 Answer (A/B/C/D/E):
 ```
+How it works:
+- You read the source facts at the beginning. We provide up to two facts of previous context, but the fact of interest is the final one. In particular, whether that fact exists in the other language version.
+- Suppose it does exist in the other article:
+    - In this case, you will pick either A, B, C, D
+    - You pick A or B when the target fact is shown in the small set of snippets from the other language version
+    - Otherwise you pick C or D. To select C or D, you'll have to go through the other language version's article directly on Wikipedia and see if you can find the fact in there.
+- Otherwise, you pick E. 
+
 
 A few things to note:
 - You can see at the start of the annotation, the total number of samples in the annotation JSON that haven't been annotated (at the beginning this will be 20).
