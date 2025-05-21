@@ -1,4 +1,5 @@
 # Contact
+Paper: https://aclanthology.org/2024.emnlp-main.384/
 Email: `fsamir@mail.ubc.ca`
 
 # Artifacts
