@@ -18,3 +18,10 @@ loguru
 sentence-transformers
 nltk
 python-dotenv
+wikidata
+pywikibot
+pandas
+requests_html
+lxml_html_clean
+openai
+pyarrow
